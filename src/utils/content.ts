@@ -130,8 +130,8 @@ export const getPinnedPosts = memoize(_getPinnedPosts)
  * @param lang The language code to filter by, defaults to site's default language
  * @returns Map of posts grouped by year (descending), sorted by date within each year
  */
-async function _getPostsByYear(lang?: Language): Promise<Map<number, Post[]>> {
-  const posts = await getRegularPosts(lang)
+async function _getPostsByYear(lang?: Language, includePinned = false): Promise<Map<number, Post[]>> {
+  const posts = await (includePinned ? getPosts(lang) : getRegularPosts(lang))
   const yearMap = new Map<number, Post[]>()
 
   posts.forEach((post: Post) => {

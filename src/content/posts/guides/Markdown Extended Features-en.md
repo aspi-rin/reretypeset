@@ -126,7 +126,7 @@ graph TD;
 
 ## Galleries
 
-To create image galleries, use the container directive `:::gallery`. Scroll horizontally to view more images.
+Consecutive images form a gallery with justified, masonry, and grid layouts. Select an image to open it in the viewer. The `:::gallery` container explicitly groups the images inside it.
 
 ### Syntax
 

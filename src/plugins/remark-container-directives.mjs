@@ -49,9 +49,6 @@ function createFoldSection(node, title) {
 function createGallery(node) {
   node.data ??= {}
   node.data.hName = 'div'
-  node.data.hProperties = {
-    className: ['gallery-container'],
-  }
 }
 
 export function remarkContainerDirectives() {
