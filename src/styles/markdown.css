@@ -274,3 +274,140 @@ html.dark .heti :where(u) {
 .heti :where(q:is(:lang(zh), :lang(ja), :lang(ko))) {
   quotes: "「" "」" "『" "』";
 }
+
+/* Article images and galleries */
+.heti .image-trigger {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+  padding: 0;
+  background: transparent;
+}
+.heti .image-trigger img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 30rem;
+  object-fit: contain;
+  border-radius: 8px;
+  outline: 1px solid oklch(0 0 0 / 0.1);
+  outline-offset: -1px;
+}
+.dark .heti .image-trigger img {
+  outline-color: oklch(1 0 0 / 0.1);
+}
+.image-gallery {
+  margin-block: 1.5rem;
+}
+.image-gallery-items {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 10px;
+}
+.heti .image-gallery .article-image {
+  min-width: 0;
+  margin: 0;
+}
+.heti .image-gallery .image-trigger,
+.heti .image-gallery img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: auto 3 / 2;
+}
+.image-gallery[data-layout='justified'] .image-gallery-items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.heti .image-gallery[data-layout='justified'] .article-image {
+  flex: none;
+  width: var(--justified-width, calc(50% - 5px));
+}
+.image-gallery[data-layout='masonry'] .image-gallery-items {
+  display: block;
+  columns: 2;
+}
+.heti .image-gallery[data-layout='masonry'] .article-image {
+  break-inside: avoid;
+  margin-bottom: 10px;
+}
+.heti .image-gallery[data-layout='grid'] img {
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+@media (min-width: 640px) {
+  .image-gallery-items {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .image-gallery[data-layout='masonry'] .image-gallery-items {
+    columns: 3;
+  }
+}
+.image-layout-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+.image-layout-controls button {
+  --at-apply: 'grid h-11 w-11 place-items-center rounded-2 border border-secondary/20 c-secondary hover:(bg-secondary/8 c-primary) active:scale-96';
+}
+.image-layout-controls button[aria-pressed='true'] {
+  --at-apply: 'border-secondary/35 bg-secondary/10 c-primary';
+}
+.image-layout-controls button:focus-visible,
+.heti .image-trigger:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+:root:has(.image-viewer[open]) {
+  overflow: hidden;
+}
+.image-viewer {
+  --at-apply: 'fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none bg-transparent p-4 text-white';
+}
+.image-viewer[open] {
+  display: grid;
+  place-items: center;
+}
+.image-viewer::backdrop {
+  background: rgb(0 0 0 / 88%);
+}
+.image-viewer figure {
+  margin: 0;
+}
+.image-viewer img {
+  max-width: calc(100vw - 32px);
+  max-height: 78dvh;
+  object-fit: contain;
+}
+.image-viewer figcaption {
+  margin: 0.5rem auto 0;
+  max-height: 12dvh;
+  overflow: auto;
+  text-align: center;
+}
+.image-viewer button:not([hidden]) {
+  --at-apply: 'absolute grid h-11 w-11 place-items-center rounded-full bg-black/65 text-white hover:bg-black/85 active:scale-96 disabled:opacity-35';
+}
+.image-viewer button:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+.image-viewer-close {
+  top: 1rem;
+  right: 1rem;
+}
+.image-viewer-previous {
+  top: 50%;
+  left: 0.75rem;
+  translate: 0 -50%;
+}
+.image-viewer-next {
+  top: 50%;
+  right: 0.75rem;
+  translate: 0 -50%;
+}

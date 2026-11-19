@@ -135,20 +135,6 @@ details[open] summary::before {
   transform: rotate(90deg) translate(0.5px, -2px);
 }
 
-/* Gallery */
-.gallery-container {
-  --at-apply: 'my-6 flex gap-4 overflow-x-auto scrollbar-hidden';
-}
-.gallery-container .gallery-item {
-  --at-apply: 'my-0 max-w-80% flex-shrink-0 lg:max-w-70%';
-}
-:is(h1, h2, h3, h4, h5, h6, .gallery-container) + .gallery-container {
-  --at-apply: 'mt-4';
-}
-.gallery-container:has(+ .gallery-container) {
-  --at-apply: 'mb-4';
-}
-
 /* Medium Embed */
 lite-youtube > .lty-playbtn {
   --at-apply: 'filter-none';

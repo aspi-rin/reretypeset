@@ -103,25 +103,6 @@ function updateMermaidTheme() {
   })
 }
 
-// Handle horizontal scrolling for gallery
-function handleGalleryWheel(e: WheelEvent) {
-  const container = (e.target as Element)?.closest('.gallery-container') as HTMLElement
-  if (!container) {
-    return
-  }
-
-  // Convert vertical scroll to horizontal
-  const previousScrollLeft = container.scrollLeft
-  container.scrollLeft += e.deltaY
-  if (container.scrollLeft === previousScrollLeft) {
-    return
-  }
-
-  // Prevent default scroll only if horizontal scroll occurred
-  e.preventDefault()
-}
-
 document.addEventListener('astro:page-load', setupMediaEmbeds)
 document.addEventListener('theme-changed', updateMermaidTheme)
-document.addEventListener('wheel', handleGalleryWheel, { passive: false })
 </script>

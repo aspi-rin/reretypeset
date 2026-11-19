@@ -28,7 +28,7 @@ interface Props {
 }
 
 const { postTitle, postDescription, postSlug, supportedLangs = [] } = Astro.props
-const { isPost } = getPageInfo(Astro.url.pathname)
+const { isPost, currentLang } = getPageInfo(Astro.url.pathname)
 const fontStyle = themeConfig.global.fontStyle === 'serif' ? 'font-serif' : 'font-sans'
 const MarginBottom = isPost && themeConfig.comment.enabled
   ? 'mb-10' // Post page with comment
@@ -52,7 +52,9 @@ const MarginBottom = isPost && themeConfig.comment.enabled
       <Header />
       <Navbar />
       <main class={MarginBottom}>
-        <slot />
+        <ImageZoom lang={currentLang}>
+          <slot />
+        </ImageZoom>
       </main>
       <Footer />
     </div>
@@ -61,6 +63,5 @@ const MarginBottom = isPost && themeConfig.comment.enabled
     <CodeCopyButton />
     <GithubCard />
     <MediaEmbed />
-    <ImageZoom />
   </body>
 </html>

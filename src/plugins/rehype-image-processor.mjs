@@ -1,77 +1,67 @@
-import { visit } from 'unist-util-visit'
+function element(tagName, properties, children) {
+  return { type: 'element', tagName, properties, children }
+}
 
-function createFigure(imgNode, isInGallery = false) {
-  const altText = imgNode.properties?.alt
-  const shouldSkipCaption = !altText || altText.startsWith('_')
-  if (shouldSkipCaption && !isInGallery) {
-    return imgNode
+function whitespace(node) {
+  return node.type === 'text' && !node.value.trim()
+}
+
+function imagesIn(node) {
+  if (node.type !== 'element' || node.tagName !== 'p')
+    return []
+  const children = node.children.filter(child => !whitespace(child))
+  return children.every(child => child.type === 'element' && child.tagName === 'img') ? children : []
+}
+
+function createFigure(image) {
+  image.properties.loading ??= 'lazy'
+  image.properties.decoding ??= 'async'
+  const { alt, title } = image.properties
+  const caption = title || (alt && !alt.startsWith('_') ? alt : '')
+  const children = [
+    element('a', { className: ['image-trigger'], dataAstroReload: true, dataAstroPrefetch: 'false' }, [image]),
+  ]
+
+  if (caption) {
+    children.push(element('figcaption', {}, [{ type: 'text', value: caption }]))
   }
 
-  const children = [imgNode]
+  return element('figure', { className: ['article-image'] }, children)
+}
 
-  if (!shouldSkipCaption) {
-    children.push({
-      type: 'element',
-      tagName: 'figcaption',
-      properties: {},
-      children: [{ type: 'text', value: altText }],
-    })
+function groupImages(parent) {
+  if (!parent.children)
+    return
+  const children = []
+  let images = []
+
+  function flushImages() {
+    if (!images.length)
+      return
+    const figures = images.map(createFigure)
+    children.push(figures.length === 1
+      ? figures[0]
+      : element('div', { className: ['image-gallery'] }, [
+          element('div', { className: ['image-gallery-items'] }, figures),
+        ]))
+    images = []
   }
 
-  return {
-    type: 'element',
-    tagName: 'figure',
-    properties: isInGallery ? { className: ['gallery-item'] } : {},
-    children,
+  for (const node of parent.children) {
+    const paragraphImages = imagesIn(node)
+    if (paragraphImages.length) {
+      images.push(...paragraphImages)
+    }
+    else if (!images.length || !whitespace(node)) {
+      flushImages()
+      groupImages(node)
+      children.push(node)
+    }
   }
+  flushImages()
+  parent.children = children
 }
 
 export function rehypeImageProcessor() {
-  return (tree) => {
-    visit(tree, 'element', (node, index, parent) => {
-      // Skip non-paragraph elements, empty paragraphs, and orphaned nodes
-      if (node.tagName !== 'p' || !node.children || node.children.length === 0 || !parent) {
-        return
-      }
-
-      // Collect images from paragraph
-      const imgNodes = []
-      for (const child of node.children) {
-        if (child.tagName === 'img') {
-          imgNodes.push(child)
-        }
-        else if (child.type !== 'text' || child.value.trim() !== '') {
-          return // Skip paragraphs with non-image content
-        }
-      }
-
-      if (imgNodes.length === 0) {
-        return
-      }
-
-      const isInGallery = parent?.properties?.className?.includes('gallery-container')
-
-      // Gallery container: convert images to figures
-      if (isInGallery) {
-        const figures = imgNodes.map(imgNode => createFigure(imgNode, true))
-        parent.children.splice(index, 1, ...figures)
-        return
-      }
-
-      // Single image: convert to figure in non-gallery containers
-      if (imgNodes.length === 1) {
-        const figure = createFigure(imgNodes[0], false)
-        if (figure !== imgNodes[0]) {
-          // Only replace if conversion happened
-          node.tagName = 'figure'
-          node.properties = figure.properties
-          node.children = figure.children
-        }
-        return
-      }
-
-      // Multiple images: unwrap in non-gallery containers
-      parent.children.splice(index, 1, ...imgNodes)
-    })
-  }
+  return groupImages
 }

@@ -1,4 +1,5 @@
 ---
+import { blogLabels } from '@/i18n/blog'
 import { ui } from '@/i18n/ui'
 import { getPageInfo } from '@/utils/page'
 
@@ -8,6 +9,8 @@ const currentUI = ui[currentLang as keyof typeof ui] ?? {}
 const isPostActive = isHome || isPost
 const isTagActive = isTag
 const isAboutActive = isAbout
+const labels = blogLabels(currentLang)
+const currentPath = Astro.url.pathname
 
 function getNavItemClass(isActive: boolean) {
   return isActive
@@ -25,6 +28,16 @@ const navItems = [
     href: '/tags/',
     label: currentUI.tags,
     className: getNavItemClass(isTagActive),
+  },
+  {
+    href: '/archives/',
+    label: labels.archives,
+    className: getNavItemClass(currentPath === getLocalizedPath('/archives/')),
+  },
+  {
+    href: '/search/',
+    label: labels.search,
+    className: getNavItemClass(currentPath === getLocalizedPath('/search/')),
   },
   {
     href: '/about/',

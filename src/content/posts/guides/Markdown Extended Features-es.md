@@ -126,7 +126,7 @@ graph TD;
 
 ## Galerías
 
-Para crear galerías de imágenes, utilice la directiva contenedor `:::gallery`. Desplácese horizontalmente para ver más imágenes.
+Las imágenes consecutivas forman una galería con disposiciones justificada, de mosaico y de cuadrícula. Selecciona una imagen para abrir el visor. El contenedor `:::gallery` agrupa explícitamente las imágenes que contiene.
 
 ### Sintaxis
 
