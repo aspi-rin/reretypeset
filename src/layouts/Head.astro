@@ -13,7 +13,7 @@ interface Props {
 
 // Props and Language
 const { postTitle, postDescription, postSlug } = Astro.props
-const { currentLang } = getPageInfo(Astro.url.pathname)
+const { currentLang, isHome } = getPageInfo(Astro.url.pathname)
 const currentUI = ui[currentLang as keyof typeof ui] ?? {}
 const lang = currentLang === defaultLocale ? '' : `${currentLang}/`
 
@@ -60,6 +60,10 @@ const pageImage = postSlug
 <link rel="preload" href={`${base}/fonts/Snell-Bold-SF.woff2`} as="font" type="font/woff2" crossorigin />
 <link rel="preload" href={`${base}/fonts/STIX-VF.woff2`} as="font" type="font/woff2" crossorigin />
 <link rel="preload" href={`${base}/fonts/STIX-Italic-VF.woff2`} as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="https://fontsapi.zeoseven.com/144/main/result.css" referrerpolicy="no-referrer" />
+{(postSlug || isHome) && (
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@callmebill/lxgw-wenkai-web@1.530.0/lxgwwenkai-regular/result.css" referrerpolicy="no-referrer" />
+)}
 {katexEnabled && <link rel="stylesheet" href={katexCSS} media="print" onload={`this.media='all'`} />}
 
 <!-- Site Links -->
